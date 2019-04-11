@@ -4,15 +4,28 @@ const mg = require('./mg');
 
 /* GET users listing. */
 router.post('/login', function (req, res, next) {
-    mg.Login.find({name: req.body.name, password: req.body.password}, (err, data) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    // console.log(req.body);
+    mg.loginModel.find({username: username, password: password}, (err, data) => {
+        console.log(data, 'data');
+        // console.log(data[0].username);
         if (err) {
-            res.send({'status': 1002, 'message': '查询数据库失败!', 'data': err});
+            res.send({'result': 1, 'message': '查询数据库失败!', 'data': err});
         } else {
             // console.log(data,'data')
             if (data.length > 0) {
-                res.send({'status': 1000, 'message': '登录成功!', 'data': data});
+                // res.cookie('username', data[0].username, {
+                //     path:'/',    // cookie 放到根目录
+                //     maxAge: 1000*60*60   // 时间 一小时
+                // }),
+                // console.log(res.cookie)
+                req.session.userName = req.body.username;
+                console.log(req.session,'req.session.userName')
+                // res.redirect('/')
+                res.send({'result': 0, 'message': '登录成功!', 'data': data});
             } else {
-                res.send({'status': 1001, 'message': '登录失败，该用户没有注册!', 'data': err});
+                res.send({'result': 1, 'message': '用户名或密码错误!', 'data': err});
             }
         }
     })
@@ -20,32 +33,41 @@ router.post('/login', function (req, res, next) {
 
 router.post('/register', function (req, res, next) {
     console.log('req', req.body.username,req.body.password);
+    const username = req.body.username;
+    const password = req.body.password;
 
-    const register = new mg.registerModel.Register({
-        username:req.body.username,
-        password: req.body.password
-    });
+    mg.loginModel.find({username: username}, (err, data) => {
+        console.log(1, data);
+        if (err) {
+            res.send({'result': 1, 'message': '查询数据库失败!', 'data': err});
+        } else {
+            console.log(data,'data')
+            if (data.length > 0) {
+                res.send({'result': 0, 'message': '已注册!', 'data': data});
+            } else {
+                const register = new mg.loginModel({
+                    username: username,
+                    password: password
+                });
 
-    console.log(2);
-
-    register.save(function(err,ret){
-        if(err){
-            console.log(err);
-            res.send(err);
-        }else{
-            console.log('save succeed');
-            console.log(ret);
-            res.send({'status': 0, 'message': '登录成功!'});
+                register.save(function(err,ret){
+                    if(err){
+                        console.log(err);
+                        res.send(err);
+                    }else{
+                        console.log('save succeed');
+                        console.log(ret);
+                        res.send({'result': 0, 'message': '注册成功!','data': data});
+                    }
+                });
+            }
         }
     });
 });
 
-router.get('/logout', function (req, res, next) {
-    res.send('respond with a resource');
-});
-
-router.get('/register', function (req, res, next) {
-    res.send('respond with a resource');
-});
+router.post('/logout', function (req, res, next) {
+    req.session.userName = null
+    res.redirect('login');
+})
 
 module.exports = router;

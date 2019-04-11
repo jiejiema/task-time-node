@@ -29,21 +29,21 @@ db.once('open', function callback() { //监听一次打开
 var Blog = mongoose.model('Blog', blogSchema);//编译model*/
 
 //1.Schema  数据库集合的模型骨架，或者是数据属性模型传统意义的表结构。
-const loginSchema = new mongoose.Schema({
-    username: String, //定义一个属性user_id，类型为String
-    password: String, //定义一个属性content，类型为String
-    // updated_at: Date //定义一个属性updated_at，类型为Date
-});
+// const loginSchema = new mongoose.Schema({
+//     username: String, //定义一个属性user_id，类型为String
+//     password: String, //定义一个属性content，类型为String
+//     // updated_at: Date //定义一个属性updated_at，类型为Date
+// });
 
 //2.Model 通过Schema构造而成，除了具有Schema定义的数据库骨架以外，还可以具体的操作数据库。
 //这里表示在task-time数据库中创建了一个users的表，并且格式为loginSchema中所定义的
-const loginModel= {
-    Login : mongoose.model('user',loginSchema)
-};
+// const loginModel= {
+//     Login : mongoose.model('users',loginSchema)
+// };
 // mongoose.model('users', loginSchema); //将该Schema发布为Model,user就是集合名称
 
 
-const registerSchema = new mongoose.Schema({
+const loginSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
@@ -51,16 +51,18 @@ const registerSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        unique: true,
         require: true
     }
 });
 
-const registerModel = {
-    Register: mongoose.model('users', registerSchema)
-};
+// const loginModel = {
+//     user: mongoose.model('users', loginSchema)
+// };
+const loginModel = mongoose.model('users', loginSchema);
 
 // module.exports = loginModel;
 module.exports = {
     loginModel,
-    registerModel
-}
+    // registerModel
+};
