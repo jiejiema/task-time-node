@@ -8,8 +8,7 @@ router.post('/login', function (req, res, next) {
     const password = req.body.password;
     // console.log(req.body);
     mg.loginModel.find({username: username, password: password}, (err, data) => {
-        console.log(data, 'data');
-        // console.log(data[0].username);
+        // console.log(data, 'data');
         if (err) {
             res.send({'result': 1, 'message': '查询数据库失败!', 'data': err});
         } else {
@@ -21,7 +20,7 @@ router.post('/login', function (req, res, next) {
                 // }),
                 // console.log(res.cookie)
                 req.session.userName = req.body.username;
-                console.log(req.session,'req.session.userName')
+                // console.log(req.session,'req.session.userName')
                 // res.redirect('/')
                 res.send({'result': 0, 'message': '登录成功!', 'data': data});
             } else {

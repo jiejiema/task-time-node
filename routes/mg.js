@@ -3,7 +3,8 @@
 * */
 
 //mongoose通过三个模块去创建一个数据库集合,还有定义"集合"的基本组成结构并使其具有相应的操作数据库能力。
-const mongoose = require('_mongoose@5.4.20@mongoose');
+// const mongoose = require('_mongoose@5.4.20@mongoose');
+const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/task-time') //连接本地数据库
 
 const db = mongoose.connection;
